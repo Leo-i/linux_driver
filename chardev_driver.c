@@ -3,6 +3,7 @@
 #include <linux/platform_device.h>
 #include <linux/of.h>
 #include <linux/fs.h>
+#include <linux/cdev.h>
 
 #define PWM_DEV_NUM 1
 #define DEVICE_NAME "Custom_PWM_driver"
@@ -10,11 +11,11 @@
 
 static ssize_t PWM_read(struct file *, char __user *, size_t, loff_t *pos);
 static ssize_t PWM_write(struct file *, const char __user *, size_t, loff_t *pos);
-static int __init my_init(void);
+static int __init PMW_driver_init(void);
 static void __exit PMW_driver_exit(void);
 
 static struct class *custom_pwm_class;
-static struct cdev pwm_cdev;
+static struct cdev *pwm_cdev;
 static dev_t dev_num;
 static struct file_operations PWM_driver_fops = 
 {
@@ -42,7 +43,7 @@ static ssize_t PWM_write(struct file *, const char __user *, size_t, loff_t *pos
     return 5;
 }
 
-static int __init my_init(void){
+static int __init PMW_driver_init(void){
     int i;
     dev_t curr_dev;
     /* Request for a major and PWM_DEV_NUM minors */
@@ -67,7 +68,6 @@ static int __init my_init(void){
 
         /* create a node for each device */
         device_create(custom_pwm_class,
-                        152 Writing Character Device Drivers
                         NULL, /* no parent device */
                         curr_dev,
                         NULL, /* no additional data */
@@ -79,13 +79,14 @@ static int __init my_init(void){
 }
 
 static void __exit PMW_driver_exit(void){
+    int i;
     for (i = 0; i < PWM_DEV_NUM; i++) {
         device_destroy(custom_pwm_class, MKDEV(MAJOR(dev_num), (MINOR(dev_num) +i)));
         cdev_del(&pwm_cdev[i]);
     }
     class_unregister(custom_pwm_class);
     class_destroy(custom_pwm_class);
-    unregister_chrdev_region(chardev_devt, PWM_DEV_NUM);
+    unregister_chrdev_region(dev_num, PWM_DEV_NUM);
 
 }
 
