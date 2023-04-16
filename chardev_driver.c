@@ -9,8 +9,8 @@
 #define DEVICE_NAME "Custom_PWM_driver"
 #define CLASS_NAME  "Custom_PWM_class"
 
-static ssize_t PWM_read(struct file *, char __user *, size_t, loff_t *pos);
-static ssize_t PWM_write(struct file *, const char __user *, size_t, loff_t *pos);
+static ssize_t PWM_read(struct file *filp, char *buffer, size_t length, loff_t *offset);
+static ssize_t PWM_write(struct file *filp, const char *buffer, size_t length, loff_t *offset);
 static int __init PMW_driver_init(void);
 static void __exit PMW_driver_exit(void);
 
@@ -28,7 +28,7 @@ static struct file_operations PWM_driver_fops =
 // *buf is the buffer we receive from user space.
 // count is the size of the requested transfer (the size of the user buffer).
 // *pos indicates the start position from which data should be read in the file
-static ssize_t PWM_read(struct file *, char __user *, size_t, loff_t *pos){
+static ssize_t PWM_read(struct file *filp, char *buffer, size_t length, loff_t *offset){
 
     printk("PWM driver read function called" );
     return 4;
@@ -37,7 +37,7 @@ static ssize_t PWM_read(struct file *, char __user *, size_t, loff_t *pos){
 // *buf represents the data buffer coming from the user space.
 // count is the size of the requested transfer.
 // *pos indicates the start position from which data should be written in the file
-static ssize_t PWM_write(struct file *, const char __user *, size_t, loff_t *pos){
+static ssize_t PWM_write(struct file *filp, const char *buffer, size_t length, loff_t *offset){
 
     printk("PWM driver write function called" );
     return 5;
@@ -97,5 +97,3 @@ module_exit(PMW_driver_exit);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Custom module maden by Leo for PWM");
 MODULE_AUTHOR("Leo");
-
-
