@@ -1,21 +1,7 @@
-#include <linux/init.h>
-#include <linux/kernel.h>
-#include <linux/module.h>
-#include <linux/fs.h>
-#include <linux/cdev.h>
-#include <linux/uaccess.h>
-
-#define PWM_DEV_NUM 1
-#define DEVICE_NAME "Custom_PWM_driver"
-#define CLASS_NAME  "Custom_PWM_class"
-
-#define BUFFER_SIZE 128
 
 
-static ssize_t PWM_read(struct file *filp, char *buffer, size_t length, loff_t *offset);
-static ssize_t PWM_write(struct file *filp, const char *buffer, size_t length, loff_t *offset);
-static int __init PMW_driver_init(void);
-static void __exit PMW_driver_exit(void);
+#include "chardev_driver.h"
+
 
 static char device_buffer[BUFFER_SIZE];
 static struct class *custom_pwm_class; // Global variable for the device class
@@ -29,7 +15,7 @@ static struct file_operations PWM_driver_fops =
 };
 
 
-// *buf is the buffer we receive from user space.
+// buffer we receive from user space.
 // count is the size of the requested transfer (the size of the user buffer).
 // *pos indicates the start position from which data should be read in the file
 static ssize_t PWM_read(struct file *filp, char *buffer, size_t length, loff_t *offset){
@@ -55,7 +41,7 @@ static ssize_t PWM_read(struct file *filp, char *buffer, size_t length, loff_t *
     return bytes_read;
 }
 
-// *buf represents the data buffer coming from the user space.
+// buffer coming from the user space.
 // count is the size of the requested transfer.
 // *pos indicates the start position from which data should be written in the file
 static ssize_t PWM_write(struct file *filp, const char *buffer, size_t length, loff_t *offset){
@@ -81,6 +67,7 @@ static ssize_t PWM_write(struct file *filp, const char *buffer, size_t length, l
 
 static int __init PMW_driver_init(void){
     
+    init_PWM(PWM0);
     /* Request for a major and PWM_DEV_NUM minors */
     if ( alloc_chrdev_region(&dev_num, 0, PWM_DEV_NUM, DEVICE_NAME) < 0 ) 
         goto chardev_region_failed;
