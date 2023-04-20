@@ -20,5 +20,5 @@ clean:
 	$(MAKE) -C $(KDIR) M=$(PWD) ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) clean
 
 clean_trash:
-	rm -rf *.o *~ core .depend .*.cmd *.mod.c *.mod *.symvers *.order .tmp_versions
+	find . ! -name '*.c' ! -name '*.h' ! -name 'Makefile' -type f -delete
 endif
