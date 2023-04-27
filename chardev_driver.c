@@ -68,6 +68,8 @@ static ssize_t PWM_write(struct file *filp, const char *buffer, size_t length, l
 static int __init PMW_driver_init(void){
     
     init_PWM(PWM0);
+    // raed_reg(12, 23);
+    // int a = readl(12 + 23);
     /* Request for a major and PWM_DEV_NUM minors */
     if ( alloc_chrdev_region(&dev_num, 0, PWM_DEV_NUM, DEVICE_NAME) < 0 ) 
         goto chardev_region_failed;

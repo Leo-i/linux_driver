@@ -2,16 +2,16 @@
 #include "PWM_controller.h"
 
 
+
 uint32_t raed_reg(uint32_t base_addr, uint8_t offset){
 
-    uint32_t *p = (uint32_t*)(base_addr + offset);
-    return (uint32_t)*p;
+    return readl(base_addr + offset);
 }
 
 void write_reg(uint32_t base_addr, uint8_t offset, uint32_t data){
 
-    uint32_t *p = (uint32_t*)(base_addr + offset);
-    *p = data;
+    writel(base_addr + offset, data);
+
 }
 
 uint8_t init_PWM(uint32_t base_addr){

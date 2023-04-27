@@ -3,6 +3,7 @@
 #define PWM_CONTROLLER_H
 
 #include <linux/types.h>
+#include <linux/io.h>
 
 #define PWM0                PWM0_BASE_ADDR
 #define PWM1                PWM1_BASE_ADDR
